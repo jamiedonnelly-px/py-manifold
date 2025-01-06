@@ -35,14 +35,11 @@ set(CORE_HEADERS
 add_library(manifold_core STATIC ${CORE_SOURCES} ${CORE_HEADERS})
 set_property(TARGET manifold_core PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-pybind11_add_module(manifold src/main.cpp)
-target_link_libraries(manifold PRIVATE manifold_core pybind11::module)
-
-set(PYTHON_MODULE_OUTPUT_DIRECTORY manifold)
-set_target_properties(manifold PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ${PYTHON_MODULE_OUTPUT_DIRECTORY}
+pybind11_add_module(_manifold_internal src/main.cpp)
+target_link_libraries(_manifold_internal PRIVATE manifold_core pybind11::module)
+set_target_properties(_manifold_internal PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/manifold"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/manifold"
+    OUTPUT_NAME "_manifold_internal"
+    PREFIX ""
 )
-
-
-
-

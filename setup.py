@@ -53,7 +53,7 @@ class CMakeBuild(build_ext):
         # Find and copy the built extension
         for root, _, files in os.walk(build_temp):
             for file in files:
-                if file.endswith('.so') and 'manifold' in file:
+                if file.endswith('.so') and '_manifold_internal' in file:
                     src = os.path.join(root, file)
                     dst = os.path.join(extdir, file)
                     print(f"Copying {src} -> {dst}", file=sys.stderr)
@@ -70,11 +70,13 @@ def main():
         author="Jamie Donnelly",
         author_email="jamie.donnelly@physicsx.ai",
         description="Python bindings for the C++ library: https://github.com/hjwdzh/ManifoldPlus",
-        ext_modules=[CMakeExtension("manifold")],
+        ext_modules=[CMakeExtension("_manifold_internal")],
+        ext_package="manifold",
         cmdclass=dict(build_ext=CMakeBuild),
         python_requires=">=3.10",
+        install_requires=["numpy"],
         packages=["manifold"],
-        package_dir={"":"."},
+        package_data={"manifold":["_manifold_internal*.so"]}
     )
 
 if __name__=="__main__":
