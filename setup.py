@@ -1,18 +1,13 @@
 import setuptools
 import os
-import re
 import sys
-import platform
 import subprocess
-import warnings
 import shutil
 
-from distutils.version import LooseVersion
 from setuptools.command.build_ext import build_ext
 
 # constants to use 
 cwd = os.path.dirname(os.path.abspath(__file__))
-third_party_path = os.path.join(cwd, "third_party")
 
 class CMakeExtension(setuptools.Extension):
     def __init__(self, name, sourcedir='', cmake_args=(), exclude_arch=False):
@@ -62,7 +57,12 @@ class CMakeBuild(build_ext):
         
         print("Warning: Could not find built extension!", file=sys.stderr)
 
+def clone_submodule():
+    subprocess.check_call(["git", "submodule", "update", "--init", "--recursive"], cwd=cwd)
+
 def main():
+    # clone submodule
+    clone_submodule()
     # run setup 
     setuptools.setup(
         name="manifold",
