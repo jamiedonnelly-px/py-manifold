@@ -9,8 +9,8 @@ if __name__=="__main__":
     print(f"Running python tests...")
 
     # find data dir
-    workspace = Path(__file__).parents[0]
-    data = workspace.parents[0] / "data"
+    workspace = Path(__file__).parents[1]
+    data = workspace / "data"
     results_dir = workspace / "results"
     
     # create directory to save results
