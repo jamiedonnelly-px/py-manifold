@@ -44,18 +44,6 @@ class CMakeBuild(build_ext):
         
         subprocess.check_call(['cmake'] + cmake_args + [ext.sourcedir], cwd=build_temp)
         subprocess.check_call(['cmake', '--build', '.'], cwd=build_temp)
-        
-        # Find and copy the built extension
-        for root, _, files in os.walk(build_temp):
-            for file in files:
-                if file.endswith('.so') and '_manifold_internal' in file:
-                    src = os.path.join(root, file)
-                    dst = os.path.join(extdir, file)
-                    print(f"Copying {src} -> {dst}", file=sys.stderr)
-                    shutil.copy(src, dst)
-                    return
-        
-        print("Warning: Could not find built extension!", file=sys.stderr)
 
 def clone_submodule():
     subprocess.check_call(["git", "submodule", "update", "--init", "--recursive"], cwd=cwd)
