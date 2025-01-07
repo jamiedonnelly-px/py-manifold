@@ -5,8 +5,17 @@ import pyvista as pv
 
 from manifold import process_manifold
 
+DEPTH = 16
+
+def construct_new_mesh(verts: np.ndarray, faces: np.ndarray) -> pv.PolyData:
+    """ Returns a new polydata given verts and faces """
+    new = pv.PolyData()
+    new.points = verts
+    new.faces = faces
+    return new
+
 if __name__=="__main__":
-    print(f"Running python tests...")
+    print(f"Running python tests with depth: {DEPTH}")
 
     # find data dir
     workspace = Path(__file__).parents[1]
@@ -20,19 +29,27 @@ if __name__=="__main__":
     # example 1 
     bathtub = pv.read(data / "bathtub.obj")
     print(f"Loaded {data / 'bathtub.obj'}. Manifoldness: {bathtub.is_manifold}")
-    print(f"Running `ManifoldPlus`...")
     verts, faces = bathtub.points, bathtub.faces
-    new_verts, new_faces = process_manifold(verts, faces, depth=8)
-    manifold_bathtub = pv.PolyData(verts=new_verts, faces=new_faces)
-    print(f"Manifoldness: {manifold_bathtub.is_manifold}")
-    manifold_bathtub.save(results_dir / "bathtub.obj")
+    new_verts, new_faces = process_manifold(verts, faces, depth=DEPTH)
+    # construct new
+    manifold_bathtub = construct_new_mesh(new_verts, new_faces)
+    print(f"Manifoldness: {manifold_bathtub.is_manifold}.")
+    save_path = results_dir / "bathtub.stl"
+    print(f"Saving results to {save_path}")
+    manifold_bathtub.save(save_path)
+    print(f"Resulting mesh has {manifold_bathtub.points.shape[0]} verts and \
+            {manifold_bathtub.faces.reshape(-1,4).shape[0]}")
 
     # example 2
     bed = pv.read(data / "bed.obj")
     print(f"Loaded {data / 'bed.obj'}. Manifoldness: {bed.is_manifold}")
-    print(f"Running `ManifoldPlus`...")
     verts, faces = bed.points, bed.faces
-    new_verts, new_faces = process_manifold(verts, faces, depth=8)
-    manifold_bed = pv.PolyData(verts=new_verts, faces=new_faces)
-    print(f"Manifoldness: {manifold_bed.is_manifold}")
-    manifold_bed.save(results_dir / "bed.obj")
+    new_verts, new_faces = process_manifold(verts, faces, depth=DEPTH)
+    # construct new
+    manifold_bed = construct_new_mesh(new_verts, new_faces)
+    print(f"Manifoldness: {manifold_bed.is_manifold}.")
+    save_path = results_dir / "bed.stl"
+    print(f"Saving results to {save_path}")
+    manifold_bed.save(save_path)
+    print(f"Resulting mesh has {manifold_bed.points.shape[0]} verts and \
+            {manifold_bed.faces.reshape(-1,4).shape[0]}")
