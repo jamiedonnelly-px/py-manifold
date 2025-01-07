@@ -6,9 +6,12 @@
 namespace py = pybind11;
 
 // Binding code to expose Manifold.ProcessManifold
-PYBIND11_MODULE(_manifold_internal, m)
-{
-    py::class_<Manifold>(m, "Manifold")
-        .def(py::init<>())
-        .def("ProcessManifold", &Manifold::ProcessManifold);
+PYBIND11_MODULE(_manifold_internal, m) {
+    m.def("_manifold", [](const MatrixD& verts, const MatrixI& faces, int depth = 8) {
+        return Manifold().ProcessManifold(verts, faces, depth);
+    },
+    py::arg("vertices"),
+    py::arg("faces"),
+    py::arg("depth") = 8
+    );
 }

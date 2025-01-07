@@ -1,10 +1,8 @@
 import setuptools
+from setuptools.command.build_ext import build_ext
 import os
 import sys
 import subprocess
-import shutil
-
-from setuptools.command.build_ext import build_ext
 
 # constants to use 
 cwd = os.path.dirname(os.path.abspath(__file__))
@@ -19,7 +17,7 @@ class CMakeExtension(setuptools.Extension):
 class CMakeBuild(build_ext):
     def run(self):
         try:
-            out = subprocess.check_output(['cmake', '--version'])
+            subprocess.check_output(['cmake', '--version'])
         except OSError:
             raise RuntimeError("CMake must be installed to build the following extensions: " +
                              ", ".join(e.name for e in self.extensions))
@@ -46,6 +44,7 @@ class CMakeBuild(build_ext):
         subprocess.check_call(['cmake', '--build', '.'], cwd=build_temp)
 
 def clone_submodule():
+    """ Clones the git submodules found .gitmodules in project directory. """
     subprocess.check_call(["git", "submodule", "update", "--init", "--recursive"], cwd=cwd)
 
 def main():
@@ -62,9 +61,9 @@ def main():
         ext_package="manifold",
         cmdclass=dict(build_ext=CMakeBuild),
         python_requires=">=3.10",
-        install_requires=["numpy"],
+        install_requires=["numpy", "pyvista"],
         packages=["manifold"],
-        package_data={"manifold":["_manifold_internal*.so"]}
+        package_data={"manifold":["_manifold_internal*.so", "*.pyi"]}
     )
 
 if __name__=="__main__":
