@@ -1,4 +1,4 @@
-import numpy as np 
+import numpy as np
 import numpy.typing as npt
 import pyvista as pv
 
@@ -6,7 +6,7 @@ from ._manifold_internal import _manifold
 
 __all__ = ['process_manifold']
 
-def _transform_faces(faces: npt.NDArray[np.int32]) -> npt.NDArray[np.int32]: 
+def _faces_to_2d(faces: npt.NDArray[np.int32]) -> npt.NDArray[np.int32]: 
     """ Function to transform 1-dimensional face array to 2-dimensional face matrix. 
 
     Args:
@@ -18,10 +18,15 @@ def _transform_faces(faces: npt.NDArray[np.int32]) -> npt.NDArray[np.int32]:
     _shape: tuple = faces.shape
     match len(_shape):
         case 1:
-            return faces.reshape(-1, 4)[:, 1]
+            # reshape to [N x 3] for N faces
+            return faces.reshape(-1, 4)[:, 1:]
         case _:
             raise ValueError(f"Faces must be a 1-dimensional array not {len(_shape)}-dimensional.")
-    
+
+def _faces_to_1d(faces: npt.NDArray[np.int32]) -> npt.NDArray[np.int32]: 
+    _faces_with_tri = np.concat([3*np.ones(faces.shape[0]).reshape(-1,1).astype(np.int32), faces], axis=1)
+    return _faces_with_tri.flatten()
+
 def process_manifold(mesh: pv.PolyData, depth: int = 8) -> pv.PolyData:
     """ Function for making pv.PolyData mesh watertight and manifold.
 
@@ -48,9 +53,15 @@ def process_manifold(mesh: pv.PolyData, depth: int = 8) -> pv.PolyData:
         return mesh
 
     # transform faces and fetch verts
-    i_verts, i_faces = mesh.points, _transform_faces(mesh.faces)
+    i_verts, i_faces = mesh.points, _faces_to_2d(mesh.faces)
 
     # run ManifoldPlus
     o_verts, o_faces = _manifold(i_verts, i_faces, depth=depth)
 
-    return pv.PolyData(o_verts, o_faces)
+    print(f"Output vert shape: {o_verts.shape}")
+    print(f"Output faces shape: {o_faces.shape}")
+
+    np.save("/home/jamie.donnelly/manifold/results/verts.npy", o_verts, allow_pickle=False)
+    np.save("/home/jamie.donnelly/manifold/results/faces.npy", o_faces, allow_pickle=False)
+
+    return pv.PolyData(o_verts, _faces_to_1d(o_faces))

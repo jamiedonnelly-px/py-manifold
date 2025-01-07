@@ -1,8 +1,9 @@
+import os
+import subprocess
+import sys
+
 import setuptools
 from setuptools.command.build_ext import build_ext
-import os
-import sys
-import subprocess
 
 # constants to use 
 cwd = os.path.dirname(os.path.abspath(__file__))
