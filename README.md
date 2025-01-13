@@ -1,6 +1,6 @@
-# ManifoldPlus Python
+# manifold
 
-Python implementation of the ManifoldPlus C++ library for making watertight manifold surfaces from triangle meshes. 
+Python (PyVista/Numpy) interface for the ManifoldPlus C++ library for making watertight manifold surfaces from triangular meshes.
 
 The library can be installed by cloning the repo and running `pip install .` 
 
