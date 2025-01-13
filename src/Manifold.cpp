@@ -15,7 +15,7 @@ Manifold::~Manifold()
 	tree_ = 0;
 }
 
-std::tuple<MatrixD, MatrixI> Manifold::ProcessManifold(const MatrixD& verts, const MatrixI& faces, int depth)
+std::tuple<MatrixD, MatrixI> Manifold::ProcessManifold(const MatrixD& verts, const MatrixI& faces, int depth, int verbose)
 {
 	V_ = verts;
 	F_ = faces;
@@ -31,7 +31,7 @@ std::tuple<MatrixD, MatrixI> Manifold::ProcessManifold(const MatrixD& verts, con
 		out_F.row(i) = face_indices_[i];
 
 	MeshProjector projector;
-	projector.Project(V_, F_, &out_V, &out_F);
+	projector.Project(V_, F_, &out_V, &out_F, verbose);
 	
 	// Return the tuple of matrices
     return std::make_tuple(out_V, out_F);

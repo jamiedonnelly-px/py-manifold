@@ -10,7 +10,7 @@ class Manifold {
 public:
 	Manifold();
 	~Manifold();
-	std::tuple<MatrixD, MatrixI> ProcessManifold(const MatrixD& verts, const MatrixI& faces, int depth);
+	std::tuple<MatrixD, MatrixI> ProcessManifold(const MatrixD& verts, const MatrixI& faces, int depth, int verbose = 0);
 
 protected:
 	void BuildTree(int resolution);

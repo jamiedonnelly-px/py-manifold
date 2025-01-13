@@ -7,3 +7,21 @@ requires = [
     "pybind11"
 ]
 build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+exclude = [
+    "*.cpp",
+    "*.hpp",
+    "3rd_party/*",
+    "build/*"
+]
+
+[tool.isort]
+skip = [
+    "3rd_party",
+    "build"
+]
+skip_glob = [
+    "**/__pycache__/*"
+]
+

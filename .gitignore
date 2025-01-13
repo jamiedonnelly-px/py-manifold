@@ -45,3 +45,6 @@ build/**
 
 # pycache
 **/__pycache__/
+
+# test ouputs
+results/

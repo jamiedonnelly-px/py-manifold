@@ -13,6 +13,7 @@
 
 #include "Intersection.hpp"
 #include "MeshProjector.hpp"
+#include "utils.hpp"
 
 #define ZERO_THRES 1e-9
 MeshProjector::MeshProjector()
@@ -190,7 +191,7 @@ void MeshProjector::ComputeIndependentSet() {
 }
 
 void MeshProjector::Project(const MatrixD& V, const MatrixI& F,
-	MatrixD* out_V, MatrixI* out_F)
+	MatrixD* out_V, MatrixI* out_F, int verbose)
 {
 	V_ = V;
 	F_ = F;
@@ -202,20 +203,22 @@ void MeshProjector::Project(const MatrixD& V, const MatrixI& F,
 	num_F_ = out_F_.rows();
 	num_V_ = out_V_.rows();
 
-	printf("Initialize AABB Tree...\n");
+	verbosePrinter(verbose, "Initialize AABB Tree...\n");
 	tree_.init(V_,F_);
 
-	printf("Build Halfedges...\n");
+	verbosePrinter(verbose, "Build Halfedges...\n");
 	ComputeHalfEdge();
-	printf("Split non-manifold vertices...\n");
+
+	verbosePrinter(verbose, "Split non-manifold vertices...\n");
 	SplitVertices();
-	printf("Rebuild Halfedges...\n");
+
+	verbosePrinter(verbose, "Rebuild Halfedges...\n");
 	ComputeHalfEdge();
 	ComputeIndependentSet();
 
-	IterativeOptimize(len, false);
+	IterativeOptimize(len, false, verbose);
 
-	printf("Sharp preservation...\n");
+	verbosePrinter(verbose, "Sharp preservation...\n");
 	AdaptiveRefine(len, 1e-3);
 
 	std::vector<int> vertex_mapping(num_V_, -1);
@@ -346,8 +349,8 @@ int MeshProjector::BoundaryCheck() {
 	return inconsistent;
 }
 
-void MeshProjector::IterativeOptimize(FT len, bool initialized) {
-	printf("Gauss-seidel update...\n");
+void MeshProjector::IterativeOptimize(FT len, bool initialized, int verbose) {
+	verbosePrinter(verbose, "Gauss-seidel update...\n");
 	if (!initialized) {
 		indices_.resize(num_V_);
 		UpdateVertexNormals(1);
@@ -376,8 +379,10 @@ void MeshProjector::IterativeOptimize(FT len, bool initialized) {
 			}
 		}
 		*/
-		printf("Iter %d with active vertex number %d    \r", iter, num_active_);
-		fflush(stdout);
+		verbosePrinter(verbose, "Iter %d with active vertex number %d    \r", iter, num_active_);
+		if (verbose == 1){
+			fflush(stdout);			
+		}
 		vertex_count += num_active_;
 		if (vertex_count > 5 * num_V_)
 			break;
@@ -467,7 +472,7 @@ void MeshProjector::IterativeOptimize(FT len, bool initialized) {
 			break;
 		iter += 1;
 	}
-	printf("\n");
+	verbosePrinter(verbose, "\n");
 }
 
 void MeshProjector::AdaptiveRefine(FT len, FT ratio) {
