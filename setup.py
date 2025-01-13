@@ -42,7 +42,7 @@ class CMakeBuild(build_ext):
         os.makedirs(build_temp, exist_ok=True)
         
         subprocess.check_call(['cmake'] + cmake_args + [ext.sourcedir], cwd=build_temp)
-        subprocess.check_call(['cmake', '--build', '.'], cwd=build_temp)
+        subprocess.check_call(['cmake', '--build', '.', f'-j{os.cpu_count()//4}'], cwd=build_temp)
 
 def clone_submodule():
     """ Clones the git submodules found .gitmodules in project directory. """
@@ -54,7 +54,7 @@ def main():
     # run setup 
     setuptools.setup(
         name="manifold",
-        version="0.0.1",
+        version="1.0",
         author="Jamie Donnelly",
         author_email="jamie.donnelly@physicsx.ai",
         description="Python bindings for the C++ library: https://github.com/hjwdzh/ManifoldPlus",
@@ -64,7 +64,7 @@ def main():
         python_requires=">=3.10",
         install_requires=["numpy", "pyvista"],
         packages=["manifold"],
-        package_data={"manifold":["_manifold_internal*.so", "*.pyi"]}
+        package_data={"manifold":["*.so"]}
     )
 
 if __name__=="__main__":

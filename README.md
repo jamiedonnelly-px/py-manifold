@@ -8,7 +8,21 @@ An example minimal python environment can be created with the library installed 
 
 With this example enviroment, the tests as provided with the original ManifoldPlus can be run using the python bindings via `make run-test`.
 
-Source: 
+The library is designed to take `pv.PolyData` as input and return `pv.PolyData` as output:
+```
+  import pyvista as pv
+  from manifold import process_manifold
+
+  non_manifold_mesh: pv.PolyData = pv.read("path/to/mesh.stl")
+
+  # non_manifold_mesh.is_manifold -> False
+
+  manifold_mesh: pv.PolyData = process_manifold(non_manifold_mesh)
+
+  # manifold_mesh.is_manifold -> True (on average)
+```
+
+Original C++ Source: 
 https://github.com/hjwdzh/ManifoldPlus
 ```
 @article{huang2020manifoldplus,

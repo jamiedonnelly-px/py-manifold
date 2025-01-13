@@ -8,7 +8,7 @@ rmenv:
 
 install-packages:
 	@pip install -r requirements.txt
-	@pip install -ve . 
+	@pip install -v . 
 
 run-test:
 	@python tests/run.py

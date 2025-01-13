@@ -27,12 +27,13 @@ def _faces_to_1d(faces: npt.NDArray[np.int32]) -> npt.NDArray[np.int32]:
     _faces_with_tri = np.concat([3*np.ones(faces.shape[0]).reshape(-1,1).astype(np.int32), faces], axis=1)
     return _faces_with_tri.flatten()
 
-def process_manifold(mesh: pv.PolyData, depth: int = 8) -> pv.PolyData:
+def process_manifold(mesh: pv.PolyData, depth: int = 8, verbose: bool = False) -> pv.PolyData:
     """ Function for making pv.PolyData mesh watertight and manifold.
 
     Args:
         mesh (pv.PolyData): Input mesh. 
         depth (int, optional): Depth of the octree used to reconstruct the mesh. Defaults to 8.
+        verbose (bool, optional): Whether to print logs about the re-meshing process to stdout. Defaults to false.
 
     Returns:
         pv.PolyData: Output watertight and manifold mesh.
@@ -56,12 +57,6 @@ def process_manifold(mesh: pv.PolyData, depth: int = 8) -> pv.PolyData:
     i_verts, i_faces = mesh.points, _faces_to_2d(mesh.faces)
 
     # run ManifoldPlus
-    o_verts, o_faces = _manifold(i_verts, i_faces, depth=depth)
-
-    print(f"Output vert shape: {o_verts.shape}")
-    print(f"Output faces shape: {o_faces.shape}")
-
-    np.save("/home/jamie.donnelly/manifold/results/verts.npy", o_verts, allow_pickle=False)
-    np.save("/home/jamie.donnelly/manifold/results/faces.npy", o_faces, allow_pickle=False)
+    o_verts, o_faces = _manifold(i_verts, i_faces, depth=depth, verbose=verbose)
 
     return pv.PolyData(o_verts, _faces_to_1d(o_faces))

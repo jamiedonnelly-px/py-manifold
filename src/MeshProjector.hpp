@@ -15,11 +15,11 @@ public:
 	void UpdateFaceNormal(int i);
 	void UpdateVertexNormal(int i, int conservative);
 	void UpdateVertexNormals(int conservative);
-	void IterativeOptimize(FT len, bool initialized = false);
+	void IterativeOptimize(FT len, bool initialized = false, int verbose = 0);
 	void AdaptiveRefine(FT len, FT ratio = 0.1);
 	void EdgeFlipRefine(std::vector<int>& candidates);
 	void Project(const MatrixD& V, const MatrixI& F,
-		MatrixD* out_V, MatrixI* out_F);
+		MatrixD* out_V, MatrixI* out_F, int verbose = 0);
 	void UpdateNearestDistance();
 	int BoundaryCheck();
 	void SplitVertices();
