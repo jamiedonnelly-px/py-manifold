@@ -1,17 +1,30 @@
 include .env
 
+.PHONY: install-package lint
+
 env: 
 	@conda create -n ${CONDA_ENV_NAME} python=${PYTHON_VER}
 
 rmenv:
 	@conda remove --all -y -n ${CONDA_ENV_NAME}
 
-install-packages:
-	@pip install -r requirements.txt
+install-package:
 	@pip install -v . 
 
-run-test:
-	@python tests/run.py
+install-package-test:
+	@pip install -v ".[test]"
+
+test:
+	@pytest --verbose
+
+generate-samples: install-package
+	@python tests/generate_samples.py
+
+lint:
+	@echo "Running Ruff and Isort..."
+	@ruff format .
+	@ruff check . --fix
+	@isort .
 
 clean:
 	@rm -rf build
