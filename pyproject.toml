@@ -9,7 +9,7 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "py-manifold"
+name = "manifold"
 version = "1.0.0"
 authors = [{name = "Jamie Donnelly", email = "jamie.donnelly@physicsx.ai"}]
 requires-python = ">=3.10, <3.13"
