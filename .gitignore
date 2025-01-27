@@ -48,3 +48,6 @@ build/**
 
 # test ouputs
 results/
+
+# Pytest
+.pytest_cache

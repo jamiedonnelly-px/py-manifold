@@ -4,10 +4,11 @@ import pyvista as pv
 
 from ._manifold_internal import _manifold
 
-__all__ = ['process_manifold']
+__all__ = ["process_manifold"]
 
-def _faces_to_2d(faces: npt.NDArray[np.int32]) -> npt.NDArray[np.int32]: 
-    """ Function to transform 1-dimensional face array to 2-dimensional face matrix. 
+
+def _faces_to_2d(faces: npt.NDArray[np.int32]) -> npt.NDArray[np.int32]:
+    """Function to transform 1-dimensional face array to 2-dimensional face matrix.
 
     Args:
         faces (npt.NDArray[np.int32]): 1-dimensional numpy array of faces in canonical pyvista format.
@@ -21,17 +22,25 @@ def _faces_to_2d(faces: npt.NDArray[np.int32]) -> npt.NDArray[np.int32]:
             # reshape to [N x 3] for N faces
             return faces.reshape(-1, 4)[:, 1:]
         case _:
-            raise ValueError(f"Faces must be a 1-dimensional array not {len(_shape)}-dimensional.")
+            raise ValueError(
+                f"Faces must be a 1-dimensional array not {len(_shape)}-dimensional."
+            )
 
-def _faces_to_1d(faces: npt.NDArray[np.int32]) -> npt.NDArray[np.int32]: 
-    _faces_with_tri = np.concat([3*np.ones(faces.shape[0]).reshape(-1,1).astype(np.int32), faces], axis=1)
+
+def _faces_to_1d(faces: npt.NDArray[np.int32]) -> npt.NDArray[np.int32]:
+    _faces_with_tri = np.concat(
+        [3 * np.ones(faces.shape[0]).reshape(-1, 1).astype(np.int32), faces], axis=1
+    )
     return _faces_with_tri.flatten()
 
-def process_manifold(mesh: pv.PolyData, depth: int = 8, verbose: bool = False) -> pv.PolyData:
-    """ Function for making pv.PolyData mesh watertight and manifold.
+
+def process_manifold(
+    mesh: pv.PolyData, depth: int = 8, verbose: bool = False
+) -> pv.PolyData:
+    """Function for making pv.PolyData mesh watertight and manifold.
 
     Args:
-        mesh (pv.PolyData): Input mesh. 
+        mesh (pv.PolyData): Input mesh.
         depth (int, optional): Depth of the octree used to reconstruct the mesh. Defaults to 8.
         verbose (bool, optional): Whether to print logs about the re-meshing process to stdout. Defaults to false.
 
@@ -40,7 +49,9 @@ def process_manifold(mesh: pv.PolyData, depth: int = 8, verbose: bool = False) -
     """
     # type checks
     if not isinstance(mesh, pv.PolyData):
-        raise AssertionError(f"Input mesh needs to be type pyvista.PolyData not {type(mesh)}")
+        raise AssertionError(
+            f"Input mesh needs to be type pyvista.PolyData not {type(mesh)}"
+        )
     if not isinstance(depth, int):
         raise AssertionError(f"Depth parameters needs to be type int not {type(depth)}")
 
