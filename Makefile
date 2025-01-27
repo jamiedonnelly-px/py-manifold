@@ -1,6 +1,6 @@
 include .env
 
-.PHONY: install-package lint
+.PHONY: install-package install-package-dev lint
 
 env: 
 	@conda create -n ${CONDA_ENV_NAME} python=${PYTHON_VER}
@@ -11,10 +11,10 @@ rmenv:
 install-package:
 	@pip install -v . 
 
-install-package-test:
-	@pip install -v ".[test]"
+install-package-dev:
+	@pip install -v ".[dev]"
 
-test:
+test: install-package-dev
 	@pytest --verbose
 
 generate-samples: install-package
