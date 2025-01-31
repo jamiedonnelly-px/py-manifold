@@ -15,7 +15,7 @@ authors = [{name = "Jamie Donnelly", email = "jamie.donnelly@physicsx.ai"}]
 requires-python = ">=3.10, <3.13"
 description = "Python bindings for the C++ library: https://github.com/hjwdzh/ManifoldPlus"
 dependencies = [
-    "numpy>=1.20.0",
+    "numpy~=1.25.0",
     "pyvista>=0.34.0",
 ]
 license = { file = "LICENSE" }

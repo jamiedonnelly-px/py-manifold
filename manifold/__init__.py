@@ -28,7 +28,7 @@ def _faces_to_2d(faces: npt.NDArray[np.int32]) -> npt.NDArray[np.int32]:
 
 
 def _faces_to_1d(faces: npt.NDArray[np.int32]) -> npt.NDArray[np.int32]:
-    _faces_with_tri = np.concat(
+    _faces_with_tri = np.concatenate(
         [3 * np.ones(faces.shape[0]).reshape(-1, 1).astype(np.int32), faces], axis=1
     )
     return _faces_with_tri.flatten()
