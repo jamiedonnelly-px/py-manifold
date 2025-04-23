@@ -135,7 +135,7 @@ void Manifold::ConstructManifold(int verbose)
 	}
 	vertices_.clear();
 	auto num_verts = (int)hash_v.size();
-	for (int i = 0; i < max; ++i)
+	for (int i = 0; i < num_verts; ++i)
 	{
 		verbosePrinter(verbose, "Processing vertex: %d/%d\n", i, num_verts);
 		if (hash_v[i])
