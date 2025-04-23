@@ -2,7 +2,6 @@
 #include <Manifold.hpp>
 
 #include "MeshProjector.hpp"
-#include "utils.hpp"
 
 Manifold::Manifold()
 	: tree_(0)

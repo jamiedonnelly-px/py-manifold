@@ -5,6 +5,7 @@
 
 #include "types.hpp"
 #include "Octree.hpp"
+#include "utils.hpp"
 
 class Manifold {
 public:
