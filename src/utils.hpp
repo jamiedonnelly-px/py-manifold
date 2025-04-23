@@ -8,6 +8,7 @@ int verbosePrinter(int verbose, const char* format, ...) {
         va_start(args, format);  
         int result = vprintf(format, args);  
         va_end(args);
+        fflush(stdout); // immediately flushes to stdout
         return result;
     } else {
         return 0;

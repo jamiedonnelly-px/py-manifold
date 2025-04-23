@@ -2,6 +2,7 @@
 #include <Manifold.hpp>
 
 #include "MeshProjector.hpp"
+#include "utils.hpp"
 
 Manifold::Manifold()
 	: tree_(0)
@@ -20,8 +21,8 @@ std::tuple<MatrixD, MatrixI> Manifold::ProcessManifold(const MatrixD& verts, con
 	V_ = verts;
 	F_ = faces;
 
-	BuildTree(depth);
-	ConstructManifold();
+	BuildTree(depth, verbose);
+	ConstructManifold(verbose);
 
 	MatrixD out_V = MatrixD(vertices_.size(), 3);
 	MatrixI out_F = MatrixI(face_indices_.size(), 3);
@@ -56,6 +57,7 @@ void Manifold::BuildTree(int depth)
 		tree_->ExpandEmpty(empty_list, empty_set, i);
 	}
 
+	int step{0}; 
 	while ((int)empty_list.size() > 0)
 	{
 		Octree* empty = empty_list.front();
@@ -70,6 +72,8 @@ void Manifold::BuildTree(int depth)
 			}
 		}
 		empty_list.pop_front();
+		verbosePrinter(verbose, "Building tree step %d\n", step);
+		step++;
 	}
 }
 
@@ -107,8 +111,9 @@ void Manifold::CalcBoundingBox()
 	}
 }
 
-void Manifold::ConstructManifold()
+void Manifold::ConstructManifold(int verbose)
 {
+	verbosePrinter(verbose, "Constructing manifold...");
 	std::map<GridIndex,int> vcolor;
 	std::vector<Vector3> nvertices;
 	std::vector<Vector4i> nface_indices;
@@ -119,16 +124,20 @@ void Manifold::ConstructManifold()
 
 	SplitGrid(nface_indices, vcolor, nvertices, v_faces, triangles);
 	std::vector<int> hash_v(nvertices.size(),0);
-	for (int i = 0; i < (int)triangles.size(); ++i)
+	auto max = (int)triangles.size();
+	for (int i = 0; i < max; ++i)
 	{
+		verbosePrinter(verbose, "Processing face: %d/%d\n", i, max);
 		for (int j = 0; j < 3; ++j)
 		{
 			hash_v[triangles[i][j]] = 1;
 		}
 	}
 	vertices_.clear();
-	for (int i = 0; i < (int)hash_v.size(); ++i)
+	auto max = (int)hash_v.size();
+	for (int i = 0; i < max; ++i)
 	{
+		verbosePrinter(verbose, "Processing vertex: %d/%d\n", i, max);
 		if (hash_v[i])
 		{
 			hash_v[i] = (int)vertices_.size();
@@ -137,8 +146,10 @@ void Manifold::ConstructManifold()
 			vertices_.push_back(nvertices[i]);
 		}
 	}
-	for (int i = 0; i < (int)triangles.size(); ++i)
+	auto max = (int)triangles.size();
+	for (int i = 0; i < max; ++i)
 	{
+		verbosePrinter(verbose, "Assigning edges vertices: %d/%d\n", i, max);
 		for (int j = 0; j < 3; ++j)
 		{
 			triangles[i][j] = hash_v[triangles[i][j]];
