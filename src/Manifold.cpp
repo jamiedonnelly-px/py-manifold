@@ -38,7 +38,7 @@ std::tuple<MatrixD, MatrixI> Manifold::ProcessManifold(const MatrixD& verts, con
     return std::make_tuple(out_V, out_F);
 }
 
-void Manifold::BuildTree(int depth)
+void Manifold::BuildTree(int depth, int verbose)
 {
 	CalcBoundingBox();
 	tree_ = new Octree(min_corner_, max_corner_, F_);
@@ -124,20 +124,20 @@ void Manifold::ConstructManifold(int verbose)
 
 	SplitGrid(nface_indices, vcolor, nvertices, v_faces, triangles);
 	std::vector<int> hash_v(nvertices.size(),0);
-	auto max = (int)triangles.size();
-	for (int i = 0; i < max; ++i)
+	auto num_triangles = (int)triangles.size();
+	for (int i = 0; i < num_triangles; ++i)
 	{
-		verbosePrinter(verbose, "Processing face: %d/%d\n", i, max);
+		verbosePrinter(verbose, "Processing face: %d/%d\n", i, num_triangles);
 		for (int j = 0; j < 3; ++j)
 		{
 			hash_v[triangles[i][j]] = 1;
 		}
 	}
 	vertices_.clear();
-	auto max = (int)hash_v.size();
+	auto num_verts = (int)hash_v.size();
 	for (int i = 0; i < max; ++i)
 	{
-		verbosePrinter(verbose, "Processing vertex: %d/%d\n", i, max);
+		verbosePrinter(verbose, "Processing vertex: %d/%d\n", i, num_verts);
 		if (hash_v[i])
 		{
 			hash_v[i] = (int)vertices_.size();
@@ -146,10 +146,10 @@ void Manifold::ConstructManifold(int verbose)
 			vertices_.push_back(nvertices[i]);
 		}
 	}
-	auto max = (int)triangles.size();
-	for (int i = 0; i < max; ++i)
+	num_triangles = (int)triangles.size();
+	for (int i = 0; i < num_triangles; ++i)
 	{
-		verbosePrinter(verbose, "Assigning edges vertices: %d/%d\n", i, max);
+		verbosePrinter(verbose, "Assigning edges vertices: %d/%d\n", i, num_triangles);
 		for (int j = 0; j < 3; ++j)
 		{
 			triangles[i][j] = hash_v[triangles[i][j]];

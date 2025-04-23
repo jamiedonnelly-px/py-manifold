@@ -13,9 +13,9 @@ public:
 	std::tuple<MatrixD, MatrixI> ProcessManifold(const MatrixD& verts, const MatrixI& faces, int depth, int verbose = 0);
 
 protected:
-	void BuildTree(int resolution);
+	void BuildTree(int resolution, int verbose);
 	void CalcBoundingBox();
-	void ConstructManifold();
+	void ConstructManifold(int verbose);
 	bool SplitGrid(const std::vector<Vector4i>& nface_indices,
 		std::map<GridIndex,int>& vcolor,
 		std::vector<Vector3>& nvertices,

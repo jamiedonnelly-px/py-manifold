@@ -47,7 +47,8 @@ class CMakeBuild(build_ext):
 
         subprocess.check_call(["cmake"] + cmake_args + [ext.sourcedir], cwd=build_temp)
         subprocess.check_call(
-            ["cmake", "--build", ".", f"-j{max(os.cpu_count() // 2, 1)}"], cwd=build_temp
+            ["cmake", "--build", ".", f"-j{max(os.cpu_count() // 2, 1)}"],
+            cwd=build_temp,
         )
 
 
